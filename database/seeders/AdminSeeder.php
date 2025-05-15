@@ -20,15 +20,17 @@ class AdminSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
+            'role' => 'admin',
         ]);
-        $admin->assignRole('admin');
+        
 
         // Buat user biasa
         $user = User::create([
             'name' => 'User',
             'email' => 'user@example.com',
             'password' => Hash::make('password'),
+            'role' => 'user'
         ]);
-        $user->assignRole('user');
+        
     }
 }

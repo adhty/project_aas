@@ -10,15 +10,15 @@
         </div>
         <div class="card" style="border-left: 5px solid #2c3e50;">
             <h3>Kategori barang</h3>
-            <span>20</span>
+            <span>0</span>
         </div>
         <div class="card" style="border-left: 5px solid #be4c7f;">
-            <h3>Users</h3>
-            <span>20</span>
+            <h3>Peminjaman</h3>
+            <span>0</span>
         </div>
         <div class="card" style="border-left: 5px solid #be4c7f;">
-            <h3>Ruangan</h3>
-            <span>20</span>
+            <h3>Pengembalian</h3>
+            <span>0</span>
         </div>
     </div>
 @endsection

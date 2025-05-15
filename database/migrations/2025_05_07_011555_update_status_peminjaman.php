@@ -6,16 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('stock_barang', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('id_barang')->constrained('barang')->onDelete('cascade');
-            $table->integer('jumlah')->default(0);
-            $table->timestamps();
+        Schema::table('peminjamans', function (Blueprint $table) {
+            $table->string('status')->default('menunggu')->change(); // dari 'dipinjam' jadi 'menunggu'
         });
         
-
     }
 
     /**
@@ -23,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stock_barang');
+        //
     }
 };

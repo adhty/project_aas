@@ -19,17 +19,18 @@ class AuthController extends Controller
     // Proses Login
     public function login(Request $request)
     {
-        $valid=$request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        return response()->json($valid, 201);
+        if (Auth::attempt($credentials)) {
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Email atau Password salah']);
     }
 
     // Tampilan Form Register
     public function showRegisterForm()
-    {   
+    {
         return view('auth.register');
     }
 

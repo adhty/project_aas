@@ -11,20 +11,20 @@ class StockBarangController extends Controller
 {
     public function index()
     {
-        $stocks = StockBarang::with('barang')->get();
+        $stocks = StockBarang::with('barangs')->get();
         return view('admin.stock.index', compact('stocks'));
     }
 
     public function create()
     {
-        $barangs = Barang::doesntHave('stock')->get(); // Biar barang yang udah ada stock nggak muncul lagi
-        return view('admin.stock.create', compact('barangs'));
+        $barang = Barang::doesntHave('stock')->get(); // Biar barang yang udah ada stock nggak muncul lagi
+        return view('admin.stock.create', compact('barang'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'id_barang' => 'required|exists:barangs,id|unique:stock_barangs,id_barang',
+            'id_barang' => 'required|exists:barang,id|unique:stock_barang,id_barang',
             'jumlah' => 'required|integer|min:0',
         ]);
 
@@ -36,8 +36,8 @@ class StockBarangController extends Controller
     public function edit($id)
     {
         $stock = StockBarang::with('barang')->findOrFail($id);
-        $barangs = Barang::all(); 
-        return view('admin.stock.edit', compact('stock', 'barangs'));
+        $barang = Barang::all(); 
+        return view('admin.stock.edit', compact('stock', 'barang'));
     }
 
     public function update(Request $request, $id)

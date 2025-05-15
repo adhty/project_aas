@@ -45,8 +45,8 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Invalid credentials'],
+            return response()->json([
+                'message' => 'Invalid'
             ]);
         }
 

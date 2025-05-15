@@ -6,7 +6,7 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('barang.update', $barang->id) }}" method="POST">
+            <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -24,14 +24,27 @@
 
                 <div class="form-group mb-3">
                     <label for="kategori_id">Kategori</label>
-                    <select name="kategori_id" id="kategori_id" class="form-control" required>
+                    <select name="id_kategori" id="kategori_id" class="form-control" required>
                         <option value="">Pilih Kategori</option>
                         @foreach($kategoris as $kategori)
-                        <option value="{{ $kategori->id }}" {{ $barang->kategori_id == $kategori->id ? 'selected' : '' }}>
+                        <option value="{{ $kategori->id }}" {{ (old('id_kategori', $barang->id_kategori) == $kategori->id) ? 'selected' : '' }}>
                             {{ $kategori->nama }}
                         </option>
                         @endforeach
                     </select>
+                </div>
+
+                {{-- Tampilkan foto lama jika ada --}}
+                @if($barang->foto)
+                <div class="form-group mb-3">
+                    <label>Foto Saat Ini</label><br>
+                    <img src="{{ asset('storage/' . $barang->foto) }}" alt="Foto Barang" width="150" style="border-radius:8px;">
+                </div>
+                @endif
+
+                <div class="form-group mb-3">
+                    <label for="foto">Ganti Foto Barang (opsional)</label>
+                    <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Update</button>
