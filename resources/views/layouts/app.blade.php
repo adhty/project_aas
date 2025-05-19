@@ -147,8 +147,8 @@
         </div>
 
         <div class="menu-group">
-            <a href="{{ route('peminjaman.admin.peminjaman.index') }}" class="{{ request()->is('peminjaman*') ? 'active' : '' }}">📋 Data Peminjaman</a>
-            <a href="#">🔁 Pengembalian Barang</a>
+            <a href="{{ route('peminjaman.index') }}" class="{{ request()->is('peminjaman*') ? 'active' : '' }}">📋 Data Peminjaman</a>
+            <a href="{{ route('pengembalian.index') }}">🔁 Pengembalian Barang</a>
         </div>
 
         <div class="menu-group">

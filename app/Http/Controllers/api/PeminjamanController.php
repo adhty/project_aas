@@ -10,7 +10,27 @@ class PeminjamanController extends Controller
 {
     public function index()
     {
-        return response()->json(Peminjaman::with(['user', 'barang'])->get());
+        $peminjamans = Peminjaman::with('barang')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $peminjamans->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'peminjaman_id' => $item->id, // Menambahkan peminjaman_id yang sama dengan id
+                    'user_id' => $item->user_id,
+                    'barang_id' => $item->barang_id,
+                    'alasan_pinjam' => $item->alasan_pinjam,
+                    'jumlah' => $item->jumlah,
+                    'tanggal_pinjam' => $item->tanggal_pinjam,
+                    'tanggal_kembali' => $item->tanggal_kembali,
+                    'status' => $item->status,
+                    'barang' => [
+                        'nama_barang' => $item->barang?->nama_barang ?? 'Barang tidak diketahui',
+                    ],
+                ];
+            }),
+        ]);
     }
 
     public function store(Request $request)
@@ -20,32 +40,55 @@ class PeminjamanController extends Controller
             'barang_id' => 'required|exists:barangs,id',
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+            'alasan_pinjam' => 'nullable|string',
+            'jumlah' => 'nullable|integer|min:1',
         ]);
-        
-        Peminjaman::create([
+
+        $peminjaman = Peminjaman::create([
             'user_id' => $request->user_id,
             'barang_id' => $request->barang_id,
             'tanggal_pinjam' => $request->tanggal_pinjam,
             'tanggal_kembali' => $request->tanggal_kembali,
-            'status' => 'menunggu', // misalnya default
-        ]); 
-        
+            'status' => 'menunggu',
+            'alasan_pinjam' => $request->alasan_pinjam,
+            'jumlah' => $request->jumlah ?? 1,
+        ]);
 
-        // return response()->json([
-        //     'message' => 'Peminjaman berhasil dibuat.',
-        //     'data' => $peminjaman,
-        // ], 201);
+        // Tambahkan peminjaman_id ke response
+        $response = $peminjaman->toArray();
+        $response['peminjaman_id'] = $peminjaman->id;
+
+        return response()->json([
+            'message' => 'Peminjaman berhasil dibuat.',
+            'data' => $response
+        ], 201);
     }
 
     public function show($id)
     {
-        $data = Peminjaman::with(['user', 'barang'])->find($id);
+        $data = Peminjaman::with('barang')->find($id);
 
         if (!$data) {
             return response()->json(['message' => 'Data tidak ditemukan.'], 404);
         }
 
-        return response()->json($data);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $data->id,
+                'peminjaman_id' => $data->id, // Menambahkan peminjaman_id yang sama dengan id
+                'user_id' => $data->user_id,
+                'barang_id' => $data->barang_id,
+                'alasan_pinjam' => $data->alasan_pinjam,
+                'jumlah' => $data->jumlah,
+                'tanggal_pinjam' => $data->tanggal_pinjam,
+                'tanggal_kembali' => $data->tanggal_kembali,
+                'status' => $data->status,
+                'barang' => [
+                    'nama_barang' => $data->barang?->nama_barang ?? 'Barang tidak diketahui',
+                ],
+            ],
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -61,9 +104,13 @@ class PeminjamanController extends Controller
 
         $peminjaman->update($request->only('status'));
 
+        // Tambahkan peminjaman_id ke response
+        $response = $peminjaman->toArray();
+        $response['peminjaman_id'] = $peminjaman->id;
+
         return response()->json([
             'message' => 'Peminjaman berhasil diperbarui.',
-            'data' => $peminjaman
+            'data' => $response
         ]);
     }
 
@@ -78,3 +125,4 @@ class PeminjamanController extends Controller
         return response()->json(['message' => 'Peminjaman berhasil dihapus.']);
     }
 }
+

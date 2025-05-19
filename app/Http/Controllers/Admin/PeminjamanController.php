@@ -8,40 +8,43 @@ use App\Models\Peminjaman;
 use App\Models\User;
 use App\Models\Barang;
 
-
 class PeminjamanController extends Controller
 {
     // Tampilkan semua data peminjaman
     public function index()
     {
-        
-    $peminjamans = Peminjaman::with(['user', 'barang'])->get();
-    $users = User::all();
-    $barangs = Barang::all();
-        return view('admin.peminjaman.index', compact('peminjamans', 'barangs'));
+        $peminjamans = Peminjaman::with(['user', 'barang'])->get();
+        return view('admin.peminjaman.index', compact('peminjamans'));
     }
 
     // Tampilkan form tambah peminjaman
     public function create()
     {
-        return view('admin.peminjaman.create');
+        $users = User::all();
+        $barangs = Barang::all();
+        return view('admin.peminjaman.create', compact('users', 'barangs'));
     }
 
     // Simpan data peminjaman baru
     public function store(Request $request)
     {
         $request->validate([
-            'nama_peminjam' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
+            'barang_id' => 'required|exists:barangs,id',
+            'alasan_pinjam' => 'nullable|string|max:1000',
+            'jumlah' => 'required|integer|min:1',
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            'barang' => 'required|string|max:255',
         ]);
 
         Peminjaman::create([
-            'nama_peminjam' => $request->nama_peminjam,
+            'user_id' => $request->user_id,
+            'barang_id' => $request->barang_id,
+            'alasan_pinjam' => $request->alasan_pinjam,
+            'jumlah' => $request->jumlah,
             'tanggal_pinjam' => $request->tanggal_pinjam,
             'tanggal_kembali' => $request->tanggal_kembali,
-            'barang' => $request->barang,
+            'status' => 'menunggu',
         ]);
 
         return redirect()->route('admin.peminjaman.index')->with('success', 'Data peminjaman berhasil ditambahkan.');
@@ -51,25 +54,33 @@ class PeminjamanController extends Controller
     public function edit($id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        return view('admin.peminjaman.edit', compact('peminjaman'));
+        $users = User::all();
+        $barangs = Barang::all();
+        return view('admin.peminjaman.edit', compact('peminjaman', 'users', 'barangs'));
     }
 
     // Update data peminjaman
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_peminjam' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
+            'barang_id' => 'required|exists:barangs,id',
+            'alasan_pinjam' => 'nullable|string|max:1000',
+            'jumlah' => 'required|integer|min:1',
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            'barang' => 'required|string|max:255',
+            'status' => 'required|in:menunggu,disetujui,ditolak,dikembalikan'
         ]);
 
         $peminjaman = Peminjaman::findOrFail($id);
         $peminjaman->update([
-            'nama_peminjam' => $request->nama_peminjam,
+            'user_id' => $request->user_id,
+            'barang_id' => $request->barang_id,
+            'alasan_pinjam' => $request->alasan_pinjam,
+            'jumlah' => $request->jumlah,
             'tanggal_pinjam' => $request->tanggal_pinjam,
             'tanggal_kembali' => $request->tanggal_kembali,
-            'barang' => $request->barang,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('admin.peminjaman.index')->with('success', 'Data peminjaman berhasil diperbarui.');
@@ -83,6 +94,24 @@ class PeminjamanController extends Controller
 
         return redirect()->route('admin.peminjaman.index')->with('success', 'Data peminjaman berhasil dihapus.');
     }
+
+    // Setujui peminjaman
+    public function approve($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->status = 'disetujui';
+        $peminjaman->save();
+
+        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman disetujui.');
+    }
+
+    // Tolak peminjaman
+    public function reject($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->status = 'ditolak';
+        $peminjaman->save();
+
+        return redirect()->route('admin.peminjaman.index')->with('success', 'Peminjaman ditolak.');
+    }
 }
-
-

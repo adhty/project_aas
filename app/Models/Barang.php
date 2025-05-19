@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Barang extends Model
 {
     use HasFactory;
-    protected $table = 'barang';
+    protected $table = 'barangs';
     protected $fillable = [
         'nama',
         'jumlah_barang',
@@ -23,7 +23,7 @@ class Barang extends Model
 
     public function stock()
     {
-        return $this->hasOne(StockBarang::class, 'id_barang');
+        return $this->hasOne(StockBarang::class, 'barang_id');
     }
     
 }

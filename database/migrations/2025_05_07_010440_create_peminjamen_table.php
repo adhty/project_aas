@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // opsional jika relasi ke user
-            $table->foreignId('barang_id')->constrained('barang')->onDelete('cascade'); // relasi ke barang
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('barang_id')->constrained()->onDelete('cascade');
+            $table->text('alasan_pinjam')->nullable();
+            $table->integer('jumlah')->default(1);
             $table->date('tanggal_pinjam');
-            $table->date('tanggal_kembali')->nullable(); // boleh kosong jika belum dikembalikan
-            $table->string('status')->default('menunggu'); // status: menunggu, disetujui, ditolak, dll
+            $table->date('tanggal_kembali');
+            $table->enum('status', ['menunggu', 'disetujui', 'ditolak', 'dikembalikan'])->default('menunggu');
             $table->timestamps();
         });
-        
     }
 
     /**
