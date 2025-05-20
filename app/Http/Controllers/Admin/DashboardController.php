@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Barang;
+use App\Models\Kategori;
+use App\Models\Peminjaman;
+use App\Models\Pengembalian;
 
 class DashboardController extends Controller
 {
@@ -16,6 +20,17 @@ class DashboardController extends Controller
     // Menampilkan dashboard admin
     public function index()
     {
-        return view('admin.dashboard'); // Ganti dengan view yang sesuai
+        $totalBarang = Barang::count();
+        $totalKategori = Kategori::count();
+        $totalPeminjaman = Peminjaman::count();
+        $totalPengembalian = Pengembalian::count();
+        
+        return view('admin.dashboard', compact(
+            'totalBarang',
+            'totalKategori',
+            'totalPeminjaman',
+            'totalPengembalian'
+        ));
     }
 }
+

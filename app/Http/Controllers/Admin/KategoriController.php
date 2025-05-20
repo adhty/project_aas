@@ -52,10 +52,23 @@ class KategoriController extends Controller
     }
 
     public function destroy(Kategori $kategori)
-{
-    $kategori->delete();
+    {
+        try {
+            // Cek apakah kategori memiliki barang terkait
+            if ($kategori->barangs()->count() > 0) {
+                return redirect()->route('kategori.index')
+                    ->with('error', 'Kategori tidak dapat dihapus karena masih memiliki barang terkait.');
+            }
+            
+            $kategori->delete();
+            return redirect()->route('kategori.index')
+                ->with('success', 'Kategori berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('kategori.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus kategori: ' . $e->getMessage());
+        }
+    }
 
-    return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus.');
 }
 
-}
+

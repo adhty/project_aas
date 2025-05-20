@@ -38,7 +38,7 @@
                             <tr>
                                 <td>{{ $peminjaman->id }}</td>
                                 <td>{{ $peminjaman->user->name ?? '-' }}</td>
-                                <td>{{ $peminjaman->barang->nama_barang ?? '-' }}</td>
+                                <td>{{ $peminjaman->barang->nama ?? '-' }}</td>
                                 <td>{{ $peminjaman->jumlah }}</td>
                                 <td>{{ $peminjaman->alasan_pinjam }}</td>
                                 <td>{{ $peminjaman->tanggal_pinjam }}</td>

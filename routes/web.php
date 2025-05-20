@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\StockBarangController;
 use App\Http\Controllers\Admin\PeminjamanController;
 use App\Http\Controllers\Admin\PengembalianController;
+use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Web\StokBarangController; // Belum dipakai
 
 /*
@@ -36,7 +37,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
     Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
     Route::get('/kategori/{kategori}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
-    // (opsional: tambahkan update & delete jika dibutuhkan)
+    Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
+    Route::delete('/kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 
     // Barang
     Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
@@ -69,6 +71,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/pengembalian/{id}', [PengembalianController::class, 'show'])->name('pengembalian.show');
     Route::post('/pengembalian/{id}/approve', [PengembalianController::class, 'approve'])->name('pengembalian.approve');
     Route::post('/pengembalian/{id}/reject', [PengembalianController::class, 'reject'])->name('pengembalian.reject');
+
+
+    // Laporan
+    Route::get('/laporan/barang', [LaporanController::class, 'barang'])->name('laporan.barang');
+    Route::get('/laporan/peminjaman', [LaporanController::class, 'peminjaman'])->name('laporan.peminjaman');
+    Route::get('/laporan/pengembalian', [LaporanController::class, 'pengembalian'])->name('laporan.pengembalian');
 });
 
 /*

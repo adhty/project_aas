@@ -14,7 +14,7 @@
                     <label for="id_barang" class="form-label">Nama Barang</label>
                     <select name="id_barang" id="id_barang" class="form-select" required>
                         <option value="">-- Pilih Barang --</option>
-                        @foreach($barangs as $barang)
+                        @foreach($barang as $barang)
                             <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                         @endforeach
                     </select>

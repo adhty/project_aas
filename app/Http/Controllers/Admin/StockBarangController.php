@@ -24,7 +24,7 @@ class StockBarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_barang' => 'required|exists:barang,id|unique:stock_barang,id_barang',
+            'barang_id' => 'required|exists:barangs,id|unique:stock_barang,barang_id',
             'jumlah' => 'required|integer|min:0',
         ]);
 
