@@ -14,12 +14,15 @@ class Pengembalian extends Model
         'tanggal_pengembalian',
         'kondisi_barang',
         'catatan',
-        'status'
+        'status',
+        'nama_pengembali',
+        'jumlah_kembali',
+        'biaya_denda'
     ];
     
     public function peminjaman()
     {
-        return $this->belongsTo(Peminjaman::class, 'peminjamans_id');
+        return $this->belongsTo(Peminjaman::class, 'peminjaman_id');
     }
     
     public function user()
@@ -32,4 +35,5 @@ class Pengembalian extends Model
         return $this->belongsTo(Barang::class, 'barang_id');
     }
 }
+
 

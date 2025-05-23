@@ -26,7 +26,7 @@ class PeminjamanController extends Controller
                     'tanggal_kembali' => $item->tanggal_kembali,
                     'status' => $item->status,
                     'barang' => [
-                        'nama_barang' => $item->barang?->nama_barang ?? 'Barang tidak diketahui',
+                    'nama_barang' => $item->barang?->nama_barang ?? 'Barang tidak diketahui',
                     ],
                 ];
             }),
@@ -44,6 +44,16 @@ class PeminjamanController extends Controller
             'jumlah' => 'nullable|integer|min:1',
         ]);
 
+        // Cek ketersediaan stok
+        $stockBarang = \App\Models\StockBarang::where('barang_id', $request->barang_id)->first();
+        
+        if (!$stockBarang || $stockBarang->jumlah < ($request->jumlah ?? 1)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok barang tidak mencukupi untuk dipinjam'
+            ], 400);
+        }
+
         $peminjaman = Peminjaman::create([
             'user_id' => $request->user_id,
             'barang_id' => $request->barang_id,
@@ -54,13 +64,10 @@ class PeminjamanController extends Controller
             'jumlah' => $request->jumlah ?? 1,
         ]);
 
-        // Tambahkan peminjaman_id ke response
-        $response = $peminjaman->toArray();
-        $response['peminjaman_id'] = $peminjaman->id;
-
         return response()->json([
-            'message' => 'Peminjaman berhasil dibuat.',
-            'data' => $response
+            'success' => true,
+            'message' => 'Permintaan peminjaman berhasil dibuat',
+            'data' => $peminjaman
         ], 201);
     }
 
@@ -102,7 +109,47 @@ class PeminjamanController extends Controller
             'status' => 'in:menunggu,disetujui,ditolak,dikembalikan',
         ]);
 
+        // Simpan status lama untuk pengecekan
+        $oldStatus = $peminjaman->status;
+        
         $peminjaman->update($request->only('status'));
+
+        // Jika status berubah menjadi disetujui, kurangi stok barang
+        if ($oldStatus != 'disetujui' && $peminjaman->status == 'disetujui') {
+            $stockBarang = \App\Models\StockBarang::where('barang_id', $peminjaman->barang_id)->first();
+            
+            if ($stockBarang) {
+                // Pastikan stok mencukupi
+                if ($stockBarang->jumlah < $peminjaman->jumlah) {
+                    // Kembalikan status ke semula jika stok tidak mencukupi
+                    $peminjaman->status = $oldStatus;
+                    $peminjaman->save();
+                    
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stok barang tidak mencukupi untuk dipinjam'
+                    ], 400);
+                }
+                
+                // Kurangi stok
+                $stockBarang->jumlah -= $peminjaman->jumlah;
+                $stockBarang->save();
+            }
+        }
+        
+        // Jika status berubah dari disetujui ke ditolak/dikembalikan, kembalikan stok
+        if ($oldStatus == 'disetujui' && ($peminjaman->status == 'ditolak' || $peminjaman->status == 'dikembalikan')) {
+            // Jika status dikembalikan, pengembalian stok akan ditangani oleh PengembalianController
+            if ($peminjaman->status == 'ditolak') {
+                $stockBarang = \App\Models\StockBarang::where('barang_id', $peminjaman->barang_id)->first();
+                
+                if ($stockBarang) {
+                    // Kembalikan stok
+                    $stockBarang->jumlah += $peminjaman->jumlah;
+                    $stockBarang->save();
+                }
+            }
+        }
 
         // Tambahkan peminjaman_id ke response
         $response = $peminjaman->toArray();
@@ -125,4 +172,6 @@ class PeminjamanController extends Controller
         return response()->json(['message' => 'Peminjaman berhasil dihapus.']);
     }
 }
+
+
 

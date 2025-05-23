@@ -18,6 +18,9 @@ return new class extends Migration
             $table->enum('kondisi_barang', ['baik', 'rusak', 'hilang'])->default('baik');
             $table->text('catatan')->nullable();
             $table->enum('status', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
+            $table->string('nama_pengembali')->nullable();
+            $table->integer('jumlah_kembali')->default(1);
+            $table->decimal('biaya_denda', 10, 2)->nullable()->default(0);
             $table->timestamps();
         });
     }
@@ -30,4 +33,5 @@ return new class extends Migration
         Schema::dropIfExists('pengembalians');
     }
 };
+
 

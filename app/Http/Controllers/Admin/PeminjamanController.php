@@ -37,6 +37,13 @@ class PeminjamanController extends Controller
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
         ]);
 
+        // Cek ketersediaan stok
+        $stockBarang = \App\Models\StockBarang::where('barang_id', $request->barang_id)->first();
+        
+        if (!$stockBarang || $stockBarang->jumlah < $request->jumlah) {
+            return redirect()->back()->with('error', 'Stok barang tidak mencukupi untuk dipinjam')->withInput();
+        }
+
         Peminjaman::create([
             'user_id' => $request->user_id,
             'barang_id' => $request->barang_id,
@@ -99,10 +106,22 @@ class PeminjamanController extends Controller
     public function approve($id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
+        
+        // Cek ketersediaan stok
+        $stockBarang = \App\Models\StockBarang::where('barang_id', $peminjaman->barang_id)->first();
+        
+        if (!$stockBarang || $stockBarang->jumlah < $peminjaman->jumlah) {
+            return redirect()->back()->with('error', 'Stok barang tidak mencukupi untuk dipinjam');
+        }
+        
+        // Kurangi stok barang
+        $stockBarang->jumlah -= $peminjaman->jumlah;
+        $stockBarang->save();
+        
         $peminjaman->status = 'disetujui';
         $peminjaman->save();
 
-        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman disetujui.');
+        return redirect()->route('admin.peminjaman.index')->with('success', 'Peminjaman disetujui.');
     }
 
     // Tolak peminjaman
@@ -115,3 +134,5 @@ class PeminjamanController extends Controller
         return redirect()->route('admin.peminjaman.index')->with('success', 'Peminjaman ditolak.');
     }
 }
+
+

@@ -17,17 +17,17 @@ Route::middleware('auth:sanctum')->group(function () {
     
 
     // Pengembalian
-    Route::post('/pengembalian', [PengembalianController::class, 'store']);
-    Route::put('/pengembalian/{id}', [PengembalianController::class, 'update']);
-    Route::get('/pengembalian/user/{userId}', [PengembalianController::class, 'getRiwayatUser']); // jika ada
 });
+Route::post('/pengembalian', [PengembalianController::class, 'store']);
+Route::put('/pengembalian/{id}', [PengembalianController::class, 'update']);
+Route::get('/pengembalian/user/{userId}', [PengembalianController::class, 'getRiwayatUser']); // jika ada
 
+Route::get('/pengembalian', [PengembalianController::class, 'index']);
+Route::get('/pengembalian/{id}', [PengembalianController::class, 'show']);
 // Peminjaman
     Route::post('/peminjaman', [PeminjamanController::class, 'store']);
-    Route::get('/peminjaman/user/{userId}/aktif', [PengembalianController::class, 'getPeminjamanAktif']);
+    Route::get('/peminjaman/user/{userId}/aktif', [PengembalianController::class, 'index']);
 
 // Barang (boleh public atau dipindah ke group juga kalau perlu login)
 Route::get('/barang', [BarangController::class, 'index']);
 Route::get('/barang/{id}', [BarangController::class, 'show']);
-Route::get('/pengembalian', [PengembalianController::class, 'index']);
-Route::get('/pengembalian/{id}', [PengembalianController::class, 'show']);

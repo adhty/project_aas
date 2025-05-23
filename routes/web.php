@@ -87,3 +87,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 Route::get('/user', function () {
     return 'user';
 })->middleware(['auth', 'role:user']);
+
+// route buar export excel
+Route::get('/admin/laporan/peminjaman', [App\Http\Controllers\LaporanController::class, 'peminjaman'])->name('laporan.peminjaman');
+
+
