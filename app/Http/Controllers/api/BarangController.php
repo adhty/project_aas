@@ -38,4 +38,31 @@ class BarangController extends Controller
             'data' => $barang
         ]);
     }
+
+    // Menampilkan stok barang
+    public function checkStock($id)
+    {
+        $barang = Barang::find($id);
+        
+        if (!$barang) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Barang tidak ditemukan',
+            ], 404);
+        }
+        
+        $stock = \App\Models\StockBarang::where('barang_id', $id)->first();
+        $stokTersedia = $stock ? $stock->jumlah : 0;
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'Informasi stok barang',
+            'data' => [
+                'barang' => $barang,
+                'stok_tersedia' => $stokTersedia
+            ]
+        ]);
+    }
 }
+
+

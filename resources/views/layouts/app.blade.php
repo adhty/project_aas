@@ -152,7 +152,6 @@
         </div>
 
         <div class="menu-group">
-            <a href="{{ route('stock.index') }}" class="{{ request()->routeIs('stock.index') ? 'active' : '' }}">📊 Laporan Stok</a>
             <a href="{{ route('laporan.peminjaman') }}">📚 Laporan Peminjaman</a>
             <a href="{{ route('laporan.pengembalian') }}">📥 Laporan Pengembalian</a>
         </div>

@@ -1,8 +1,6 @@
 <?php
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\PeminjamanController;
 use App\Http\Controllers\Api\PengembalianController;
@@ -16,18 +14,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     
 
-    // Pengembalian
+    // Pengembalian (butuh login)
+    Route::post('/pengembalian', [PengembalianController::class, 'store']);
+    Route::put('/pengembalian/{id}', [PengembalianController::class, 'update']);
 });
-Route::post('/pengembalian', [PengembalianController::class, 'store']);
-Route::put('/pengembalian/{id}', [PengembalianController::class, 'update']);
-Route::get('/pengembalian/user/{userId}', [PengembalianController::class, 'getRiwayatUser']); // jika ada
 
+// Peminjaman (butuh login)
+    Route::post('/peminjaman', [PeminjamanController::class, 'store']);
+    Route::get('/peminjaman/user/{userId}/aktif', [PeminjamanController::class, 'getPeminjamanAktifByUser']);
+    
+// Pengembalian (public view)
 Route::get('/pengembalian', [PengembalianController::class, 'index']);
 Route::get('/pengembalian/{id}', [PengembalianController::class, 'show']);
-// Peminjaman
-    Route::post('/peminjaman', [PeminjamanController::class, 'store']);
-    Route::get('/peminjaman/user/{userId}/aktif', [PengembalianController::class, 'index']);
+Route::get('/pengembalian/user/{userId}', [PengembalianController::class, 'getRiwayatUser']);
 
-// Barang (boleh public atau dipindah ke group juga kalau perlu login)
+// Barang (boleh public)
 Route::get('/barang', [BarangController::class, 'index']);
 Route::get('/barang/{id}', [BarangController::class, 'show']);
+Route::get('/barang/{id}/stock', [BarangController::class, 'checkStock']);
+
