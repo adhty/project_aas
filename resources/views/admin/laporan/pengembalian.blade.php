@@ -38,6 +38,15 @@
                         <option value="hilang" {{ request('kondisi') == 'hilang' ? 'selected' : '' }}>Hilang</option>
                     </select>
                 </div>
+                <div class="filter-item">
+                    <label for="status_pengembalian">Status Pengembalian</label>
+                    <select name="status_pengembalian" id="status_pengembalian" class="form-control">
+                        <option value="">Semua Status</option>
+                        <option value="diterima" {{ request('status_pengembalian') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                        <option value="ditolak" {{ request('status_pengembalian') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="menunggu" {{ request('status_pengembalian') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn-filter">
                     <i class="fas fa-search"></i> Filter
                 </button>
@@ -58,6 +67,7 @@
                         <th width="120">Tanggal Kembali</th>
                         <th width="120">Kondisi Barang</th>
                         <th width="120">Biaya Denda</th>
+                        <th width="100">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,6 +102,21 @@
                                 @endif
                             </td>
                             <td>Rp {{ number_format($data->biaya_denda, 0, ',', '.') }}</td>
+                            <td>
+                                @if($data->status == 'diterima')
+                                    <span class="badge-status approved">
+                                        <i class="fas fa-check"></i> Diterima
+                                    </span>
+                                @elseif($data->status == 'ditolak')
+                                    <span class="badge-status rejected">
+                                        <i class="fas fa-times"></i> Ditolak
+                                    </span>
+                                @elseif($data->status == 'menunggu')
+                                    <span class="badge-status pending">
+                                        <i class="fas fa-clock"></i> Menunggu
+                                    </span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>

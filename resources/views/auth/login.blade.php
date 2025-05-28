@@ -32,6 +32,12 @@
             border-radius: 15px 15px 0 0;
         }
         
+        .login-logo {
+            max-width: 120px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        
         .login-header h3 {
             margin: 0;
             font-weight: 600;
@@ -93,8 +99,8 @@
     <div class="login-container">
         <div class="login-card card">
             <div class="login-header">
-                <div class="app-name">Website Sarana Prasana</div>
-                <h3>Login</h3>
+                <img src="{{ asset('assets/logo.jpg') }}" alt="Logo Sarana Prasarana" class="login-logo">
+                <h3>Login Sarana Prasarana</h3>
             </div>
             
             <div class="login-body">

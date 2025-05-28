@@ -34,7 +34,7 @@ class PengembalianController extends Controller
             'kondisi_barang' => 'required|in:baik,rusak,hilang',
             'catatan' => 'nullable|string',
             'jumlah_kembali' => 'required|integer|min:1',
-            
+            'biaya_denda_manual' => 'nullable|numeric|min:0', // Tambahkan validasi untuk denda manual
         ]);
         
         // Cek apakah peminjaman sudah ada pengembalian
@@ -75,17 +75,22 @@ class PengembalianController extends Controller
         
         // 2. Cek kondisi barang rusak atau hilang
         if ($request->kondisi_barang !== 'baik') {
-            // Ambil harga barang
-            $harga_barang = $peminjaman->barang->harga ?? 0;
-            
-            if ($request->kondisi_barang === 'rusak') {
-                // Denda untuk barang rusak (50% dari harga barang)
-                $denda_kondisi = $harga_barang * 0.5 * $request->jumlah_kembali;
-                $biaya_denda += $denda_kondisi;
-            } elseif ($request->kondisi_barang === 'hilang') {
-                // Denda untuk barang hilang (100% dari harga barang)
-                $denda_kondisi = $harga_barang * $request->jumlah_kembali;
-                $biaya_denda += $denda_kondisi;
+            // Jika admin menentukan denda manual untuk barang rusak/hilang
+            if ($request->has('biaya_denda_manual') && $request->biaya_denda_manual > 0) {
+                $biaya_denda += $request->biaya_denda_manual;
+            } else {
+                // Gunakan perhitungan otomatis jika tidak ada input denda manual
+                $harga_barang = $peminjaman->barang->harga ?? 0;
+                
+                if ($request->kondisi_barang === 'rusak') {
+                    // Denda untuk barang rusak (50% dari harga barang)
+                    $denda_kondisi = $harga_barang * 0.5 * $request->jumlah_kembali;
+                    $biaya_denda += $denda_kondisi;
+                } elseif ($request->kondisi_barang === 'hilang') {
+                    // Denda untuk barang hilang (100% dari harga barang)
+                    $denda_kondisi = $harga_barang * $request->jumlah_kembali;
+                    $biaya_denda += $denda_kondisi;
+                }
             }
         }
         
@@ -159,13 +164,29 @@ class PengembalianController extends Controller
     public function reject($id)
     {
         $pengembalian = Pengembalian::findOrFail($id);
+        
+        // Pastikan pengembalian belum diproses sebelumnya
+        if ($pengembalian->status !== 'menunggu') {
+            return redirect()->back()->with('error', 'Pengembalian ini sudah diproses sebelumnya.');
+        }
+        
+        // Update status pengembalian menjadi ditolak
         $pengembalian->status = 'ditolak';
         $pengembalian->save();
+        
+        // Tambahkan catatan ke log pengembalian untuk laporan
+        // Ini memastikan pengembalian yang ditolak tetap muncul di laporan
         
         return redirect()->route('pengembalian.index')
             ->with('success', 'Pengembalian ditolak.');
     }
 }
+
+
+
+
+
+
 
 
 

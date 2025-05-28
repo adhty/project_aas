@@ -3,7 +3,10 @@
 @section('content')
 <div class="dashboard-container">
     <div class="dashboard-header">
-        <h1>Dashboard</h1>
+        <div class="welcome-text">
+            <h1>Selamat Datang, {{ Auth::user()->name }}</h1>
+            <h2>Dashboard Admin</h2>
+        </div>
         <div class="date-display">
             <span id="current-date"></span>
         </div>
@@ -160,25 +163,38 @@
     .dashboard-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         margin-bottom: 25px;
         padding-bottom: 15px;
         border-bottom: 1px solid #e2e8f0;
     }
+    
+    .welcome-text {
+        display: flex;
+        flex-direction: column;
+    }
 
-    .dashboard-header h1 {
+    .welcome-text h1 {
         font-size: 24px;
         color: #1e293b;
         margin: 0;
         font-weight: 600;
+    }
+    
+    .welcome-text h2 {
+        font-size: 18px;
+        color: #64748b;
+        margin: 8px 0 0 0;
+        font-weight: 500;
     }
 
     .date-display {
         color: #64748b;
         font-size: 14px;
         background-color: #f1f5f9;
-        padding: 6px 12px;
+        padding: 8px 15px;
         border-radius: 6px;
+        margin-top: 5px;
     }
 
     /* Kartu statistik yang ditingkatkan */

@@ -25,8 +25,10 @@ class LaporanController extends Controller
     public function pengembalian(Request $request)
     {
         // Buat query dasar
-        $query = Pengembalian::with(['peminjaman.user', 'peminjaman.barang'])
-            ->where('status', 'diterima');
+        $query = Pengembalian::with(['peminjaman.user', 'peminjaman.barang']);
+        
+        // PENTING: Jangan filter berdasarkan status 'diterima' saja
+        // Tampilkan semua status pengembalian (diterima, ditolak, menunggu)
         
         // Filter berdasarkan tanggal mulai
         if ($request->has('tanggal_mulai') && $request->tanggal_mulai) {
@@ -43,15 +45,20 @@ class LaporanController extends Controller
             $query->where('kondisi_barang', $request->kondisi);
         }
         
+        // Filter berdasarkan status pengembalian (baru)
+        if ($request->has('status_pengembalian') && $request->status_pengembalian) {
+            $query->where('status', $request->status_pengembalian);
+        }
+        
         // Ambil data
-        $pengembalians = $query->get()
+        $pengembalians = $query->orderBy('created_at', 'desc')->get()
             ->map(function ($pengembalian) {
                 return (object)[
                     'id' => $pengembalian->id,
-                    'user' => $pengembalian->peminjaman->user,
-                    'barang' => $pengembalian->peminjaman->barang,
+                    'user' => $pengembalian->peminjaman->user ?? null,
+                    'barang' => $pengembalian->peminjaman->barang ?? null,
                     'jumlah' => $pengembalian->jumlah_kembali,
-                    'tanggal_peminjaman' => $pengembalian->peminjaman->tanggal_pinjam,
+                    'tanggal_peminjaman' => $pengembalian->peminjaman->tanggal_pinjam ?? null,
                     'tanggal_pengembalian' => $pengembalian->tanggal_pengembalian,
                     'kondisi_barang' => $pengembalian->kondisi_barang,
                     'biaya_denda' => $pengembalian->biaya_denda,
@@ -93,6 +100,8 @@ class LaporanController extends Controller
         return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download($fileName);
     }
 }
+
+
 
 
 

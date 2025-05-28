@@ -30,20 +30,63 @@
             top: 0;
             bottom: 0;
             left: 0;
+            overflow-y: auto; /* Tambahkan scroll vertikal */
+            scrollbar-width: thin; /* Untuk Firefox */
+            scrollbar-color: #475569 #1e293b; /* Untuk Firefox */
+        }
+        
+        /* Styling untuk scrollbar di Chrome, Edge, dan Safari */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #475569;
+            border-radius: 6px;
+        }
+        
+        /* Pastikan konten menu tidak terpotong */
+        .menu-group {
+            margin-bottom: 20px;
+            width: 100%;
         }
 
+        .logo-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-logo {
+            max-width: 25%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        
         .sidebar h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             text-align: center;
-            margin-bottom: 40px;
-            background-color: #334155;
-            padding: 14px;
-            border-radius: 10px;
+            margin-bottom: 30px;
+            color: #fff;
         }
 
         .menu-group {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .menu-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            padding-left: 5px;
+            font-weight: 600;
         }
 
         .menu-group a {
@@ -175,31 +218,36 @@
 </head>
 <body>
     <div class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-chevron-left" id="toggleIcon"></i>
-        </button>
-        <h2>📁 Sarana Prasarana</h2>
+        <div class="logo-container">
+            <img src="{{ asset('assets/logo.jpg') }}" alt="Logo Sarana Prasarana" class="sidebar-logo">
+        </div>
+        <h2>Sarana Prasarana</h2>
 
         <div class="menu-group">
+            <h3 class="menu-title">Menu Utama</h3>
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">🏠 Dashboard</a>
         </div>
 
         <div class="menu-group">
+            <h3 class="menu-title">Data Master</h3>
             <a href="{{ route('kategori.index') }}" class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}">📂 Kategori Barang</a>
             <a href="{{ route('barang.index') }}" class="{{ request()->routeIs('barang.*') ? 'active' : '' }}">📦 Data Barang</a>
         </div>
 
         <div class="menu-group">
+            <h3 class="menu-title">Transaksi</h3>
             <a href="{{ route('peminjaman.index') }}" class="{{ request()->is('peminjaman*') ? 'active' : '' }}">📋 Data Peminjaman</a>
             <a href="{{ route('pengembalian.index') }}">🔁 Pengembalian Barang</a>
         </div>
 
         <div class="menu-group">
+            <h3 class="menu-title">Laporan</h3>
             <a href="{{ route('laporan.peminjaman') }}">📚 Laporan Peminjaman</a>
             <a href="{{ route('laporan.pengembalian') }}">📥 Laporan Pengembalian</a>
         </div>
 
         <div class="menu-group">
+            <h3 class="menu-title">Pengaturan</h3>
             <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">👥 Manajemen User</a>
         </div>
 
