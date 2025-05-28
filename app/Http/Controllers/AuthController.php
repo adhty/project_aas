@@ -54,6 +54,9 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        
+        // Assign role 'user' ke user baru
+        $user->assignRole('user');
 
         Auth::login($user);
 
@@ -67,3 +70,4 @@ class AuthController extends Controller
         return redirect()->route('auth.login'); // <--- ini perbaikan
     }
 }
+

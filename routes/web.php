@@ -77,6 +77,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/laporan/barang', [LaporanController::class, 'barang'])->name('laporan.barang');
     Route::get('/laporan/peminjaman', [LaporanController::class, 'peminjaman'])->name('laporan.peminjaman');
     Route::get('/laporan/pengembalian', [LaporanController::class, 'pengembalian'])->name('laporan.pengembalian');
+
+    // User Management Routes
+    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
+    Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/users', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
 });
 
 /*
@@ -84,11 +92,20 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 | User Role Route
 |--------------------------------------------------------------------------
 */
-Route::get('/user', function () {
-    return 'user';
-})->middleware(['auth', 'role:user']);
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user.dashboard');
+});
 
 // route buar export excel
 Route::get('/admin/laporan/peminjaman', [App\Http\Controllers\LaporanController::class, 'peminjaman'])->name('laporan.peminjaman');
+
+// Tambahkan routes untuk profile
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.update.password');
+});
+
 
 

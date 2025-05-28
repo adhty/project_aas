@@ -66,3 +66,4 @@ class BarangController extends Controller
 }
 
 
+

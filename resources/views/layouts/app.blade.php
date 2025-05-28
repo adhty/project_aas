@@ -131,10 +131,53 @@
             display: block;
             color: #0f172a;
         }
+
+        .sidebar-toggle {
+            position: absolute;
+            top: 20px;
+            right: -15px;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-260px);
+        }
+        
+        .content.expanded {
+            margin-left: 0;
+        }
+        
+        .sidebar, .content {
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 1000;
+            }
+            
+            .content.expanded {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-left" id="toggleIcon"></i>
+        </button>
         <h2>📁 Sarana Prasarana</h2>
 
         <div class="menu-group">
@@ -156,6 +199,10 @@
             <a href="{{ route('laporan.pengembalian') }}">📥 Laporan Pengembalian</a>
         </div>
 
+        <div class="menu-group">
+            <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">👥 Manajemen User</a>
+        </div>
+
         <div class="menu-group logout">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -164,8 +211,48 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content" id="content">
         @yield('content')
     </div>
+    
+    <!-- Add Font Awesome if not already included -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Add JavaScript for toggle functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            // Check if sidebar state is stored in localStorage
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            
+            // Apply initial state
+            if (sidebarCollapsed) {
+                sidebar.classList.add('collapsed');
+                content.classList.add('expanded');
+                toggleIcon.classList.remove('fa-chevron-left');
+                toggleIcon.classList.add('fa-chevron-right');
+            }
+            
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('expanded');
+                
+                // Toggle icon
+                if (sidebar.classList.contains('collapsed')) {
+                    toggleIcon.classList.remove('fa-chevron-left');
+                    toggleIcon.classList.add('fa-chevron-right');
+                    localStorage.setItem('sidebarCollapsed', 'true');
+                } else {
+                    toggleIcon.classList.remove('fa-chevron-right');
+                    toggleIcon.classList.add('fa-chevron-left');
+                    localStorage.setItem('sidebarCollapsed', 'false');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

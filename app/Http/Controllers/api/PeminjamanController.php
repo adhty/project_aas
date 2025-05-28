@@ -47,6 +47,7 @@ class PeminjamanController extends Controller
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
             'alasan_pinjam' => 'nullable|string',
             'jumlah' => 'nullable|integer|min:1',
+            'status' => 'required|in:menunggu,disetujui,ditolak,dikembalikan',
         ]);
 
         $userId = $request->user_id;

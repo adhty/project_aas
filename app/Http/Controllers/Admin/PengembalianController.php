@@ -33,8 +33,8 @@ class PengembalianController extends Controller
             'tanggal_pengembalian' => 'required|date',
             'kondisi_barang' => 'required|in:baik,rusak,hilang',
             'catatan' => 'nullable|string',
-            'nama_pengembali' => 'required|string|max:255',
             'jumlah_kembali' => 'required|integer|min:1',
+            
         ]);
         
         // Cek apakah peminjaman sudah ada pengembalian
@@ -96,7 +96,6 @@ class PengembalianController extends Controller
             'kondisi_barang' => $request->kondisi_barang,
             'catatan' => $request->catatan,
             'status' => 'menunggu',
-            'nama_pengembali' => $request->nama_pengembali,
             'jumlah_kembali' => $request->jumlah_kembali,
             'biaya_denda' => $biaya_denda,
         ]);
@@ -114,25 +113,47 @@ class PengembalianController extends Controller
     public function approve($id)
     {
         $pengembalian = Pengembalian::with('peminjaman.barang')->findOrFail($id);
+        
+        // Pastikan pengembalian belum disetujui sebelumnya
+        if ($pengembalian->status !== 'menunggu') {
+            return redirect()->back()->with('error', 'Pengembalian ini sudah diproses sebelumnya.');
+        }
+        
+        // Update status pengembalian menjadi diterima
         $pengembalian->status = 'diterima';
+        
+        // Pastikan biaya denda sudah dihitung dengan benar
+        $peminjaman = $pengembalian->peminjaman;
+        $harga_barang = $peminjaman->barang->harga ?? 0;
+        
+        // Cek kondisi barang dan hitung denda jika rusak atau hilang
+        if ($pengembalian->kondisi_barang === 'rusak') {
+            // Denda untuk barang rusak (50% dari harga barang)
+            $denda_kondisi = $harga_barang * 0.5 * $pengembalian->jumlah_kembali;
+            $pengembalian->biaya_denda = $pengembalian->biaya_denda + $denda_kondisi;
+        } elseif ($pengembalian->kondisi_barang === 'hilang') {
+            // Denda untuk barang hilang (100% dari harga barang)
+            $denda_kondisi = $harga_barang * $pengembalian->jumlah_kembali;
+            $pengembalian->biaya_denda = $pengembalian->biaya_denda + $denda_kondisi;
+        }
+        
         $pengembalian->save();
         
         // Update status peminjaman menjadi dikembalikan
-        $peminjaman = $pengembalian->peminjaman;
         $peminjaman->status = 'dikembalikan';
         $peminjaman->save();
         
         // Update stok barang hanya jika kondisi baik
         if ($pengembalian->kondisi_barang == 'baik') {
-            $stock = \App\Models\StockBarang::where('barang_id', $peminjaman->barang_id)->first();
+            $stock =StockBarang::where('barang_id', $peminjaman->barang_id)->first();
             if ($stock) {
                 $stock->jumlah += $pengembalian->jumlah_kembali;
                 $stock->save();
             }
         }
         
-        return redirect()->route('admin.pengembalian.index')
-            ->with('success', 'Pengembalian berhasil disetujui.');
+        return redirect()->route('pengembalian.index')
+            ->with('success', 'Pengembalian berhasil disetujui dengan biaya denda Rp ' . number_format($pengembalian->biaya_denda, 0, ',', '.'));
     }
     
     public function reject($id)
@@ -141,10 +162,13 @@ class PengembalianController extends Controller
         $pengembalian->status = 'ditolak';
         $pengembalian->save();
         
-        return redirect()->route('admin.pengembalian.index')
+        return redirect()->route('pengembalian.index')
             ->with('success', 'Pengembalian ditolak.');
     }
 }
+
+
+
 
 
 

@@ -43,4 +43,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Tambahkan relasi profile di model User
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    // Tambahkan method untuk membuat profile jika belum ada
+    public function getProfileAttribute()
+    {
+        if (!$this->relationLoaded('profile')) {
+            $this->load('profile');
+        }
+        
+        if (!$this->profile) {
+            $this->profile()->create();
+            $this->load('profile');
+        }
+        
+        return $this->getRelation('profile');
+    }
 }
+
+

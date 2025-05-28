@@ -15,9 +15,11 @@ class Barang extends Model
         'id_kategori',
         'foto'
     ];
-    
 
-    public function Kategori() {
+    protected $appends = ['foto_url'];
+
+
+    public function kategori() {
         return $this->belongsTo(Kategori::class, 'id_kategori' );
     }
 
@@ -25,6 +27,16 @@ class Barang extends Model
     {
         return $this->hasOne(StockBarang::class, 'barang_id');
     }
-    
+
+    // Accessor untuk URL foto
+    public function getFotoUrlAttribute()
+    {
+        if ($this->foto) {
+            return asset('storage/' . $this->foto);
+        }
+        return null;
+    }
+
 }
+
 

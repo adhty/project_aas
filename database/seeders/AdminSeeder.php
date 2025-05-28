@@ -24,13 +24,7 @@ class AdminSeeder extends Seeder
         ]);
         
 
-        // Buat user biasa
-        $user = User::create([
-            'name' => 'User',
-            'email' => 'user@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'user'
-        ]);
+       
         
     }
 }

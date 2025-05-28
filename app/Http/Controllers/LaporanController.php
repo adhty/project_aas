@@ -52,11 +52,14 @@ class LaporanController extends Controller
                 'Status' => ucfirst($pinjam->status)
             ];
         });
+        
 
         // Buat nama file dengan timestamp
         $fileName = 'Laporan_Peminjaman_' . Carbon::now()->format('d-m-Y_H-i-s') . '.xlsx';
 
+
         // Export ke Excel dan download
         return (new FastExcel($data))->download($fileName);
+        
     }
 }
