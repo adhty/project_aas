@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            
             $table->foreignId('barang_id')->constrained()->onDelete('cascade');
             $table->text('alasan_pinjam')->nullable();
             $table->integer('jumlah')->default(1);

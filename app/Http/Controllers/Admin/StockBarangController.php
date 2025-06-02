@@ -28,15 +28,19 @@ class StockBarangController extends Controller
             'jumlah' => 'required|integer|min:0',
         ]);
 
-        StockBarang::create($request->only('id_barang', 'jumlah'));
+        StockBarang::create([
+            'barang_id' => $request->barang_id,
+            'jumlah' => $request->jumlah,
+        ]);
 
         return redirect()->route('stock.create')->with('success', 'Stock berhasil ditambahkan.');
     }
 
+
     public function edit($id)
     {
         $stock = StockBarang::with('barang')->findOrFail($id);
-        $barang = Barang::all(); 
+        $barang = Barang::all();
         return view('admin.stock.edit', compact('stock', 'barang'));
     }
 

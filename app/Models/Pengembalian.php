@@ -25,15 +25,31 @@ class Pengembalian extends Model
         return $this->belongsTo(Peminjaman::class, 'peminjaman_id');
     }
     
+    // Relasi langsung ke user dan barang melalui peminjaman
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->hasOneThrough(
+            User::class,
+            Peminjaman::class,
+            'id', // Foreign key di peminjaman
+            'id', // Foreign key di user
+            'peminjaman_id', // Local key di pengembalian
+            'user_id' // Local key di peminjaman
+        );
     }
     
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'barang_id');
+        return $this->hasOneThrough(
+            Barang::class,
+            Peminjaman::class,
+            'id', // Foreign key di peminjaman
+            'id', // Foreign key di barang
+            'peminjaman_id', // Local key di pengembalian
+            'barang_id' // Local key di peminjaman
+        );
     }
 }
+
 
 

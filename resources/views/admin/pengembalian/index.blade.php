@@ -37,6 +37,7 @@
                             <th width="60">ID</th>
                             <th>Nama Akun</th>
                             <th>Barang</th>
+                            <th>Alasan</th>
                             <th width="80">Jumlah</th>
                             <th width="120">Tanggal Kembali</th>
                             <th width="120">Kondisi Barang</th>
@@ -56,6 +57,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $pengembalian->peminjaman->barang->nama ?? '-' }}</td>
+                                 <td>{{ $pengembalian->peminjaman-> alasan_pinjam ?? '-' }}</td>
                                 <td class="text-center">
                                     <span class="badge-jumlah">{{ $pengembalian->peminjaman->jumlah ?? '-' }}</span>
                                 </td>
@@ -157,7 +159,7 @@
 
     .pengembalian-header h1 {
         font-size: 24px;
-        color: #f8fafc;
+        color: #000000;
         margin: 0;
         font-weight: 600;
         display: flex;

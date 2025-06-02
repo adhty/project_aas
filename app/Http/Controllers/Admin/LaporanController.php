@@ -24,11 +24,8 @@ class LaporanController extends Controller
 
     public function pengembalian(Request $request)
     {
-        // Buat query dasar
+        // Buat query dasar dengan eager loading yang benar
         $query = Pengembalian::with(['peminjaman.user', 'peminjaman.barang']);
-        
-        // PENTING: Jangan filter berdasarkan status 'diterima' saja
-        // Tampilkan semua status pengembalian (diterima, ditolak, menunggu)
         
         // Filter berdasarkan tanggal mulai
         if ($request->has('tanggal_mulai') && $request->tanggal_mulai) {
@@ -45,26 +42,16 @@ class LaporanController extends Controller
             $query->where('kondisi_barang', $request->kondisi);
         }
         
-        // Filter berdasarkan status pengembalian (baru)
+        // Filter berdasarkan status pengembalian
         if ($request->has('status_pengembalian') && $request->status_pengembalian) {
             $query->where('status', $request->status_pengembalian);
         }
         
         // Ambil data
-        $pengembalians = $query->orderBy('created_at', 'desc')->get()
-            ->map(function ($pengembalian) {
-                return (object)[
-                    'id' => $pengembalian->id,
-                    'user' => $pengembalian->peminjaman->user ?? null,
-                    'barang' => $pengembalian->peminjaman->barang ?? null,
-                    'jumlah' => $pengembalian->jumlah_kembali,
-                    'tanggal_peminjaman' => $pengembalian->peminjaman->tanggal_pinjam ?? null,
-                    'tanggal_pengembalian' => $pengembalian->tanggal_pengembalian,
-                    'kondisi_barang' => $pengembalian->kondisi_barang,
-                    'biaya_denda' => $pengembalian->biaya_denda,
-                    'status' => $pengembalian->status
-                ];
-            });
+        $pengembalians = $query->orderBy('created_at', 'desc')->get();
+        
+        // Debug untuk memeriksa data
+       
 
         // Jika request meminta export Excel
         if ($request->has('export') && $request->export == 'excel') {
@@ -76,20 +63,35 @@ class LaporanController extends Controller
 
     private function exportPengembalianToExcel($pengembalians)
     {
-        // Pastikan package fast-excel sudah diinstall
-        // composer require rap2hpoutre/fast-excel
-        
         // Format data untuk export
-        $data = $pengembalians->map(function ($data, $index) {
+        $data = $pengembalians->map(function ($pengembalian, $index) {
+            $userName = $pengembalian->peminjaman && $pengembalian->peminjaman->user 
+                ? $pengembalian->peminjaman->user->name 
+                : 'Data User Tidak Ditemukan';
+            
+            $barangName = $pengembalian->peminjaman && $pengembalian->peminjaman->barang 
+                ? $pengembalian->peminjaman->barang->nama_barang 
+                : 'Data Barang Tidak Ditemukan';
+            
+            $tanggalPinjam = $pengembalian->peminjaman 
+                ? $pengembalian->peminjaman->tanggal_pinjam 
+                : '-';
+            
+            $alasanPinjam = $pengembalian->peminjaman 
+                ? $pengembalian->peminjaman->alasan_pinjam 
+                : '-';
+            
             return [
                 'No' => $index + 1,
-                'Nama Peminjam' => $data->user->name ?? '-',
-                'Nama Barang' => $data->barang->nama ?? '-',
-                'Jumlah' => $data->jumlah,
-                'Tanggal Pinjam' => $data->tanggal_peminjaman,
-                'Tanggal Kembali' => $data->tanggal_pengembalian,
-                'Kondisi Barang' => ucfirst($data->kondisi_barang),
-                'Biaya Denda' => 'Rp ' . number_format($data->biaya_denda, 0, ',', '.')
+                'Nama Peminjam' => $userName,
+                'Nama Barang' => $barangName,
+                'Alasan' => $alasanPinjam,
+                'Jumlah' => $pengembalian->jumlah_kembali,
+                'Tanggal Pinjam' => $tanggalPinjam,
+                'Tanggal Kembali' => $pengembalian->tanggal_pengembalian,
+                'Kondisi Barang' => ucfirst($pengembalian->kondisi_barang),
+                'Biaya Denda' => 'Rp ' . number_format($pengembalian->biaya_denda, 0, ',', '.'),
+                'Status' => ucfirst($pengembalian->status)
             ];
         });
 
@@ -100,6 +102,14 @@ class LaporanController extends Controller
         return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download($fileName);
     }
 }
+
+
+
+
+
+
+
+
 
 
 

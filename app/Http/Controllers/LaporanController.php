@@ -49,17 +49,18 @@ class LaporanController extends Controller
                 'Jumlah' => $pinjam->jumlah,
                 'Tanggal Pinjam' => $pinjam->tanggal_pinjam,
                 'Tanggal Kembali' => $pinjam->tanggal_kembali,
+                'Alasan Pinjam' => $pinjam->alasan_pinjam ?? '-',
                 'Status' => ucfirst($pinjam->status)
             ];
         });
         
-
         // Buat nama file dengan timestamp
         $fileName = 'Laporan_Peminjaman_' . Carbon::now()->format('d-m-Y_H-i-s') . '.xlsx';
 
-
         // Export ke Excel dan download
         return (new FastExcel($data))->download($fileName);
-        
     }
 }
+
+
+

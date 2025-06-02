@@ -56,6 +56,7 @@
                         <th width="50">No</th>
                         <th>Nama Peminjam</th>
                         <th>Nama Barang</th>
+                        <th>Alasan Pinjam</th>
                         <th width="80">Jumlah</th>
                         <th width="120">Tanggal Pinjam</th>
                         <th width="120">Tanggal Kembali</th>
@@ -73,6 +74,8 @@
                                 </div>
                             </td>
                             <td>{{ $pinjam->barang->nama ?? '-' }}</td>
+                            
+                            <td>{{ $pinjam->alasan_pinjam ?? '-' }}</td>
                             <td class="text-center">
                                 <span class="badge-jumlah">{{ $pinjam->jumlah }}</span>
                             </td>
@@ -100,7 +103,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="empty-data">
+                            <td colspan="8" class="empty-data">
                                 <div class="empty-state">
                                     <i class="fas fa-search"></i>
                                     <p>Tidak ada data peminjaman yang ditemukan.</p>

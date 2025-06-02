@@ -8,6 +8,7 @@ use App\Models\Pengembalian;
 use App\Models\Peminjaman;
 use App\Models\StockBarang;
 use Carbon\Carbon;
+use App\Models\User;
 
 class PengembalianController extends Controller
 {
@@ -99,4 +100,52 @@ class PengembalianController extends Controller
             'data'    => $pengembalian
         ], 201);
     }
+
+    public function riwayat($userId)
+    {
+        // Validasi user ID
+        $user = User::find($userId);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 404);
+        }
+
+        // Ambil data pengembalian berdasarkan user ID
+        // Menggunakan relasi dari pengembalian -> peminjaman -> user
+        $pengembalians = Pengembalian::with(['peminjaman.barang'])
+            ->whereHas('peminjaman', function($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $pengembalians->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'peminjaman_id' => $item->peminjaman_id,
+                    'tanggal_pengembalian' => $item->tanggal_pengembalian,
+                    'kondisi_barang' => $item->kondisi_barang,
+                    'catatan' => $item->catatan,
+                    'status' => $item->status,
+                    'jumlah_kembali' => $item->jumlah_kembali,
+                    'biaya_denda' => $item->biaya_denda,
+                    'barang' => [
+                        'nama_barang' => $item->peminjaman->barang->nama_barang ?? 'Barang tidak diketahui',
+                    ],
+                    'peminjaman' => [
+                        'tanggal_pinjam' => $item->peminjaman->tanggal_pinjam ?? '-',
+                        'tanggal_kembali' => $item->peminjaman->tanggal_kembali ?? '-',
+                        'jumlah' => $item->peminjaman->jumlah ?? 0,
+                    ],
+                ];
+            })
+        ]);
+    }
 }
+
+
+

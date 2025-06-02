@@ -161,6 +161,6 @@ class PeminjamanController extends Controller
         $peminjaman->status = 'ditolak';
         $peminjaman->save();
 
-        return redirect()->route('admin.peminjaman.index')->with('success', 'Peminjaman ditolak.');
+        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman ditolak.');
     }
 }

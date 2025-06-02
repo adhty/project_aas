@@ -28,6 +28,8 @@ class Barang extends Model
         return $this->hasOne(StockBarang::class, 'barang_id');
     }
 
+    
+
     // Accessor untuk URL foto
     public function getFotoUrlAttribute()
     {

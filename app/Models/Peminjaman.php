@@ -26,11 +26,10 @@ class Peminjaman extends Model
     }
 
     public function barang() {
-        return $this->belongsTo(Barang::class, 'barang_id');
+        return $this->belongsTo(Barang::class);
     }
     public function pengembalian() {
         return $this->hasOne(Pengembalian::class, 'peminjaman_id');
     }
     
 }
-

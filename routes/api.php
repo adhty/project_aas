@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // Pengembalian (public view)
 Route::get('/pengembalian', [PengembalianController::class, 'index']);
 Route::get('/pengembalian/{id}', [PengembalianController::class, 'show']);
-Route::get('/pengembalian/user/{userId}', [PengembalianController::class, 'getRiwayatUser']);
+Route::get('/pengembalian/user/{userId}', [PengembalianController::class, 'riwayat']);
 
 // Barang (boleh public untuk read, butuh auth untuk write)
 Route::get('/barang', [BarangController::class, 'index']);

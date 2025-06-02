@@ -38,9 +38,9 @@
                         <option value="hilang" {{ request('kondisi') == 'hilang' ? 'selected' : '' }}>Hilang</option>
                     </select>
                 </div>
-                <div class="filter-item">
-                    <label for="status_pengembalian">Status Pengembalian</label>
-                    <select name="status_pengembalian" id="status_pengembalian" class="form-control">
+                <div class="filter-group">
+                    <label for="status_pengembalian">Status:</label>
+                    <select id="status_pengembalian" name="status_pengembalian" class="form-control">
                         <option value="">Semua Status</option>
                         <option value="diterima" {{ request('status_pengembalian') == 'diterima' ? 'selected' : '' }}>Diterima</option>
                         <option value="ditolak" {{ request('status_pengembalian') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
@@ -62,6 +62,7 @@
                         <th width="50">No</th>
                         <th>Nama Peminjam</th>
                         <th>Nama Barang</th>
+                        <th>Alasan</th>
                         <th width="80">Jumlah</th>
                         <th width="120">Tanggal Pinjam</th>
                         <th width="120">Tanggal Kembali</th>
@@ -71,47 +72,64 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($pengembalians as $index => $data)
+                    @forelse($pengembalians as $index => $pengembalian)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>
                                 <div class="user-info">
                                     <i class="fas fa-user-circle"></i>
-                                    <span>{{ $data->user->name ?? '-' }}</span>
+                                    @if($pengembalian->peminjaman && $pengembalian->peminjaman->user)
+                                        <span>{{ $pengembalian->peminjaman->user->name }}</span>
+                                    @else
+                                        <span>Data User Tidak Ditemukan</span>
+                                    @endif
                                 </div>
                             </td>
-                            <td>{{ $data->barang->nama ?? '-' }}</td>
-                            <td class="text-center">
-                                <span class="badge-jumlah">{{ $data->jumlah }}</span>
-                            </td>
-                            <td>{{ $data->tanggal_peminjaman }}</td>
-                            <td>{{ $data->tanggal_pengembalian }}</td>
                             <td>
-                                @if($data->kondisi_barang == 'baik')
+                                @if($pengembalian->peminjaman && $pengembalian->peminjaman->barang)
+                                    {{ $pengembalian->peminjaman->barang->nama }}
+                                @else
+                                    Data Barang Tidak Ditemukan
+                                @endif
+                            </td>
+                            <td>{{ $pengembalian->peminjaman->alasan_pinjam ?? '-' }}</td>
+                            <td class="text-center">
+                                <span class="badge-jumlah">{{ $pengembalian->jumlah_kembali }}</span>
+                            </td>
+                            <td>
+                                @if($pengembalian->peminjaman)
+                                    {{ $pengembalian->peminjaman->tanggal_pinjam }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>{{ $pengembalian->tanggal_pengembalian }}</td>
+                            <td>
+                                @if($pengembalian->kondisi_barang == 'baik')
                                     <span class="badge-status approved">
                                         <i class="fas fa-check"></i> Baik
                                     </span>
-                                @elseif($data->kondisi_barang == 'rusak')
+                                @elseif($pengembalian->kondisi_barang == 'rusak')
                                     <span class="badge-status pending">
                                         <i class="fas fa-exclamation-triangle"></i> Rusak
                                     </span>
-                                @elseif($data->kondisi_barang == 'hilang')
+                                @elseif($pengembalian->kondisi_barang == 'hilang')
                                     <span class="badge-status rejected">
                                         <i class="fas fa-times"></i> Hilang
                                     </span>
                                 @endif
                             </td>
-                            <td>Rp {{ number_format($data->biaya_denda, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($pengembalian->biaya_denda, 0, ',', '.') }}</td>
                             <td>
-                                @if($data->status == 'diterima')
+                                @if($pengembalian->status == 'diterima')
                                     <span class="badge-status approved">
                                         <i class="fas fa-check"></i> Diterima
                                     </span>
-                                @elseif($data->status == 'ditolak')
+                                @elseif($pengembalian->status == 'ditolak')
                                     <span class="badge-status rejected">
                                         <i class="fas fa-times"></i> Ditolak
                                     </span>
-                                @elseif($data->status == 'menunggu')
+                                @elseif($pengembalian->status == 'menunggu')
                                     <span class="badge-status pending">
                                         <i class="fas fa-clock"></i> Menunggu
                                     </span>
@@ -120,10 +138,11 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="empty-data">
+                            <td colspan="9" class="empty-data">
                                 <div class="empty-state">
                                     <i class="fas fa-search"></i>
                                     <p>Tidak ada data pengembalian yang ditemukan.</p>
+                                    <small>Coba ubah filter pencarian atau pastikan ada data pengembalian yang sudah diproses.</small>
                                 </div>
                             </td>
                         </tr>

@@ -27,6 +27,7 @@ class DashboardController extends Controller
         $totalKategori = Kategori::count();
         $totalPeminjaman = Peminjaman::count();
         $totalPengembalian = Pengembalian::count();
+        $totalBarangRusak = Pengembalian::count();
         
         // Mengambil data peminjaman untuk 30 hari terakhir
         $startDate = Carbon::now()->subDays(30);
