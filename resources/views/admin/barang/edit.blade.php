@@ -22,6 +22,7 @@
                         value="{{ old('jumlah_barang', $barang->jumlah_barang) }}" min="0" required>
                 </div>
 
+
                 <div class="form-group mb-3">
                     <label for="kategori_id">Kategori</label>
                     <select name="id_kategori" id="kategori_id" class="form-control" required>

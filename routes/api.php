@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Peminjaman (butuh login)
     Route::post('/peminjaman', [PeminjamanController::class, 'store']);
-    Route::get('/peminjaman/user/{userId}/aktif', [PeminjamanController::class, 'index']);
+    Route::get('/peminjaman', [PeminjamanController::class, 'index']);
 
 // Pengembalian (public view)
 Route::get('/pengembalian', [PengembalianController::class, 'index']);

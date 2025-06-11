@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="dashboard-container">
+    @if(session('login_success'))
+    <div id="login-alert" style="display:none;"></div>
+    @endif
+    
     <div class="dashboard-header">
         <div class="welcome-text">
             <h1>Selamat Datang, {{ Auth::user()->name }}</h1>
@@ -642,5 +646,27 @@
         const now = new Date();
         dateElement.textContent = now.toLocaleDateString('id-ID', options);
     });
+</script>
+@endsection
+
+@section('scripts')
+<script>
+    // Script yang sudah ada
+
+    // Tampilkan alert login berhasil
+    @if(session('login_success'))
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Berhasil',
+            text: 'Selamat datang, {{ Auth::user()->name }}!',
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            position: 'top-end',
+            toast: true
+        });
+    });
+    @endif
 </script>
 @endsection

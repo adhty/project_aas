@@ -17,7 +17,8 @@ class Pengembalian extends Model
         'status',
         'nama_pengembali',
         'jumlah_kembali',
-        'biaya_denda'
+        'biaya_denda',
+        'detail_denda'
     ];
     
     public function peminjaman()
@@ -50,6 +51,8 @@ class Pengembalian extends Model
         );
     }
 }
+
+
 
 
 

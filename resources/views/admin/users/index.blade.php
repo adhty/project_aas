@@ -66,7 +66,7 @@
                                         <a href="{{ route('admin.users.edit', $user) }}" class="btn-action edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirmDelete(this, '{{ $user->name }}')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn-action delete">
@@ -230,8 +230,26 @@
 </style>
 @endsection
 
-
-
-
-
+@section('scripts')
+<script>
+    function confirmDelete(form, userName) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Konfirmasi Hapus',
+            html: `Apakah Anda yakin ingin menghapus user <strong>${userName}</strong>?<br>Tindakan ini tidak dapat dibatalkan!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+        return false;
+    }
+</script>
+@endsection
 

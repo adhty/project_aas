@@ -11,7 +11,7 @@ class BarangController extends Controller
     // Menampilkan semua barang
     public function index()
     {
-        $barang = Barang::all();
+        $barang = Barang::with('kategori')->get();
 
         return response()->json([
             'status' => true,
@@ -20,10 +20,11 @@ class BarangController extends Controller
         ], 200);
     }
 
+
     // Menampilkan detail satu barang
     public function show($id)
     {
-        $barang = Barang::find($id);
+        $barang = Barang::with('kategori')->find($id);
 
         if (!$barang) {
             return response()->json([
@@ -39,21 +40,22 @@ class BarangController extends Controller
         ]);
     }
 
+
     // Menampilkan stok barang
     public function checkStock($id)
     {
         $barang = Barang::find($id);
-        
+
         if (!$barang) {
             return response()->json([
                 'status' => false,
                 'message' => 'Barang tidak ditemukan',
             ], 404);
         }
-        
+
         $stock = \App\Models\StockBarang::where('barang_id', $id)->first();
         $stokTersedia = $stock ? $stock->jumlah : 0;
-        
+
         return response()->json([
             'status' => true,
             'message' => 'Informasi stok barang',
@@ -64,6 +66,3 @@ class BarangController extends Controller
         ]);
     }
 }
-
-
-

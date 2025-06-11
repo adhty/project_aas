@@ -14,10 +14,15 @@ class Barang extends Model
         'jumlah_barang',
         'id_kategori',
         'foto'
+
     ];
 
     protected $appends = ['foto_url'];
 
+    public function peminjamans()
+    {
+        return $this->hasMany(Peminjaman::class, 'barang_id');
+    }
 
     public function kategori() {
         return $this->belongsTo(Kategori::class, 'id_kategori' );

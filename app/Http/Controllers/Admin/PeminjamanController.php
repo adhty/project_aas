@@ -164,3 +164,4 @@ class PeminjamanController extends Controller
         return redirect()->route('peminjaman.index')->with('success', 'Peminjaman ditolak.');
     }
 }
+

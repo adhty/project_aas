@@ -29,7 +29,7 @@ class PeminjamanController extends Controller
                     'tanggal_kembali' => $item->tanggal_kembali,
                     'status' => $item->status,
                     'barang' => [
-                        'nama_barang' => $item->barang?->nama_barang ?? 'Barang tidak diketahui',
+                        'nama_barang' => $item->barang->nama,
                     ],
                     'user' => [
                         'name' => $item->user?->name ?? 'User tidak diketahui',

@@ -17,7 +17,7 @@
                 </div>
                 
                 <div class="card-body p-4">
-                    <form action="{{ route('admin.users.update', $user) }}" method="POST" class="text-center">
+                    <form action="{{ route('admin.users.update', $user) }}" method="POST" class="text-center" id="edit-user-form">
                         @csrf
                         @method('PUT')
                         
@@ -70,10 +70,12 @@
                             </div>
                         </div>
                         
-                        <div class="form-group text-center mt-5">
-                            <button type="submit" class="btn btn-primary px-4 py-2">
-                                <i class="fas fa-save me-2"></i> Simpan Perubahan
-                            </button>
+                        <div class="form-group row justify-content-center mt-4">
+                            <div class="col-md-8">
+                                <button type="button" onclick="confirmUpdate()" class="btn btn-primary w-100 py-2">
+                                    <i class="fas fa-save me-2"></i> Simpan Perubahan
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -134,3 +136,32 @@
     }
 </style>
 @endsection
+
+@section('scripts')
+<script>
+    function confirmUpdate() {
+        const name = document.querySelector('input[name="name"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        const role = document.querySelector('select[name="role"]').options[document.querySelector('select[name="role"]').selectedIndex].text;
+        
+        Swal.fire({
+            title: 'Konfirmasi Update User',
+            html: `Apakah Anda yakin ingin memperbarui data user ini?<br>
+                  <b>Nama:</b> ${name}<br>
+                  <b>Email:</b> ${email}<br>
+                  <b>Role:</b> ${role}`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Update!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('edit-user-form').submit();
+            }
+        });
+    }
+</script>
+@endsection
+

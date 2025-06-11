@@ -160,7 +160,7 @@ class PengembalianController extends Controller
         }
 
 
-        return redirect()->route('pengembalian.index')
+        return redirect()->route('admin.pengembalian.index')
             ->with('success', 'Pengembalian berhasil disetujui dengan biaya denda Rp ' . number_format($pengembalian->biaya_denda, 0, ',', '.'));
     }
 
@@ -173,14 +173,51 @@ class PengembalianController extends Controller
             return redirect()->back()->with('error', 'Pengembalian ini sudah diproses sebelumnya.');
         }
 
-        // Update status pengembalian menjadi ditolak
+        // Redirect ke form input denda manual
+        return view('admin.pengembalian.reject', compact('pengembalian'));
+    }
+
+    public function processReject(Request $request, $id)
+    {
+        $request->validate([
+            'biaya_denda_manual' => 'required|numeric|min:0',
+            'alasan_penolakan' => 'required|string|max:1000',
+        ]);
+
+        $pengembalian = Pengembalian::with('peminjaman')->findOrFail($id);
+
+        // Pastikan pengembalian belum diproses sebelumnya
+        if ($pengembalian->status !== 'menunggu') {
+            return redirect()->back()->with('error', 'Pengembalian ini sudah diproses sebelumnya.');
+        }
+
+        // Update status pengembalian menjadi ditolak dengan denda manual
         $pengembalian->status = 'ditolak';
+        $pengembalian->biaya_denda = $request->biaya_denda_manual;
+        
+        // Simpan detail denda dalam format JSON
+        $detail_denda = [
+            'keterlambatan' => 0,
+            'kondisi_barang' => 0,
+            'denda_manual' => $request->biaya_denda_manual,
+            'alasan_penolakan' => $request->alasan_penolakan,
+            'total' => $request->biaya_denda_manual,
+            'is_manual' => true
+        ];
+        
+        $pengembalian->detail_denda = json_encode($detail_denda);
+        $pengembalian->catatan = $pengembalian->catatan . "\n\nAlasan penolakan: " . $request->alasan_penolakan;
         $pengembalian->save();
 
-        // Tambahkan catatan ke log pengembalian untuk laporan
-        // Ini memastikan pengembalian yang ditolak tetap muncul di laporan
+        // Jika pengembalian ditolak, status peminjaman tetap 'disetujui'
+        // sehingga peminjam masih bertanggung jawab atas barang tersebut
 
-        return redirect()->route('pengembalian.index')
-            ->with('success', 'Pengembalian ditolak.');
+        return redirect()->route('admin.pengembalian.index')
+            ->with('success', 'Pengembalian ditolak dengan denda Rp ' . number_format($request->biaya_denda_manual, 0, ',', '.'));
     }
 }
+
+
+
+
+

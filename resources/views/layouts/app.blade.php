@@ -215,6 +215,8 @@
             }
         }
     </style>
+    <!-- Di bagian head, tambahkan SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
 </head>
 <body>
     <div class="sidebar" id="sidebar">
@@ -237,7 +239,7 @@
         <div class="menu-group">
             <h3 class="menu-title">Transaksi</h3>
             <a href="{{ route('peminjaman.index') }}" class="{{ request()->is('peminjaman*') ? 'active' : '' }}">📋 Data Peminjaman</a>
-            <a href="{{ route('pengembalian.index') }}">🔁 Pengembalian Barang</a>
+            <a href="{{ route('admin.pengembalian.index') }}">🔁 Pengembalian Barang</a>
         </div>
 
         <div class="menu-group">
@@ -252,9 +254,9 @@
         </div>
 
         <div class="menu-group logout">
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" id="logout-form">
                 @csrf
-                <button>🚪 Logout</button>
+                <button type="button" onclick="confirmLogout()">🚪 Logout</button>
             </form>
         </div>
     </div>
@@ -302,5 +304,18 @@
             });
         });
     </script>
+
+    <!-- Tambahkan script untuk konfirmasi logout -->
+    <script>
+        function confirmLogout() {
+            if (confirm('Apakah Anda yakin ingin keluar dari Mobile ini?')) {
+                document.getElementById('logout-form').submit();
+            }
+        }
+    </script>
+    <!-- Di bagian bawah sebelum </body>, tambahkan SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <!-- Tambahkan yield untuk scripts -->
+    @yield('scripts')
 </body>
 </html>

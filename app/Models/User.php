@@ -44,6 +44,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function peminjamans()
+    {
+        return $this->hasMany(Peminjaman::class, 'user_id');
+    }
+
+
     // Tambahkan relasi profile di model User
     public function profile()
     {
@@ -56,14 +62,12 @@ class User extends Authenticatable
         if (!$this->relationLoaded('profile')) {
             $this->load('profile');
         }
-        
+
         if (!$this->profile) {
             $this->profile()->create();
             $this->load('profile');
         }
-        
+
         return $this->getRelation('profile');
     }
 }
-
-

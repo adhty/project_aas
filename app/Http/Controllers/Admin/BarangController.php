@@ -12,7 +12,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barang = Barang::all();
+        $barang = Barang::with('kategori')->get();
         return view('admin.barang.index', compact('barang'));
     }
 
@@ -79,4 +79,6 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
     }
+
+    
 }

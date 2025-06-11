@@ -42,14 +42,16 @@
                     <label for="status_pengembalian">Status:</label>
                     <select id="status_pengembalian" name="status_pengembalian" class="form-control">
                         <option value="">Semua Status</option>
+                        <option value="menunggu" {{ request('status_pengembalian') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                         <option value="diterima" {{ request('status_pengembalian') == 'diterima' ? 'selected' : '' }}>Diterima</option>
                         <option value="ditolak" {{ request('status_pengembalian') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                        <option value="menunggu" {{ request('status_pengembalian') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-filter">
-                    <i class="fas fa-search"></i> Filter
-                </button>
+                <div class="filter-group">
+                    <button type="submit" class="btn-filter">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -138,11 +140,10 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="empty-data">
+                            <td colspan="10" class="empty-data">
                                 <div class="empty-state">
                                     <i class="fas fa-search"></i>
                                     <p>Tidak ada data pengembalian yang ditemukan.</p>
-                                    <small>Coba ubah filter pencarian atau pastikan ada data pengembalian yang sudah diproses.</small>
                                 </div>
                             </td>
                         </tr>
@@ -172,7 +173,7 @@
 
     .pengembalian-header h1 {
         font-size: 24px;
-        color: #000000;
+        color:rgb(0, 0, 0);
         margin: 0;
         font-weight: 600;
         display: flex;
@@ -181,7 +182,8 @@
 
     .pengembalian-header h1 i {
         margin-right: 10px;
-        color: #3b82f6;
+        color: #60a5fa;
+        font-size: 22px;
     }
 
     .header-actions {
@@ -190,7 +192,7 @@
     }
 
     .btn-action {
-        background-color: #3b82f6;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
         border: none;
         padding: 10px 16px;
@@ -200,7 +202,8 @@
         align-items: center;
         text-decoration: none;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
     }
 
     .btn-action i {
@@ -208,15 +211,18 @@
     }
 
     .btn-action:hover {
-        background-color: #2563eb;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
         color: white;
+        text-decoration: none;
     }
 
     /* Filter card */
     .filter-card {
-        background-color: #ffffff;
+        background-color: #1e293b;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
         margin-bottom: 20px;
     }
@@ -243,17 +249,19 @@
         display: block;
         margin-bottom: 5px;
         font-size: 14px;
-        color: #4b5563;
+        color: #cbd5e1;
         font-weight: 500;
     }
 
     .form-control {
         width: 100%;
         padding: 10px;
-        border: 1px solid #d1d5db;
+        border: 1px solid #334155;
         border-radius: 6px;
         font-size: 14px;
         transition: border-color 0.2s;
+        background-color: #0f172a;
+        color: #f8fafc;
     }
 
     .form-control:focus {
@@ -263,7 +271,7 @@
     }
 
     .btn-filter {
-        background-color: #3b82f6;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
         border: none;
         padding: 10px 16px;
@@ -272,9 +280,10 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        transition: background-color 0.2s;
+        transition: all 0.3s ease;
         height: 40px;
         margin-top: 24px;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
     }
 
     .btn-filter i {
@@ -282,12 +291,14 @@
     }
 
     .btn-filter:hover {
-        background-color: #2563eb;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
     }
 
     /* Card */
     .pengembalian-card {
-        background-color: #1e293b;
+        background-color: #0f172a;
         border-radius: 10px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         overflow: hidden;
@@ -304,12 +315,21 @@
     }
 
     .pengembalian-table th {
-        background-color: #f8fafc;
-        color: #1e293b;
+        background-color: #1e293b;
+        color: #f8fafc;
         padding: 14px 16px;
         text-align: left;
         font-weight: 600;
         white-space: nowrap;
+        border-bottom: 2px solid #3b82f6;
+    }
+    
+    .pengembalian-table th:first-child {
+        border-top-left-radius: 8px;
+    }
+    
+    .pengembalian-table th:last-child {
+        border-top-right-radius: 8px;
     }
 
     .pengembalian-table td {
@@ -319,8 +339,20 @@
         vertical-align: middle;
     }
 
-    .pengembalian-table tr:hover {
-        background-color: #334155;
+    .pengembalian-table tr:hover td {
+        background-color: #1e293b;
+    }
+    
+    .pengembalian-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .pengembalian-table tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+    
+    .pengembalian-table tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
     }
 
     .text-center {
@@ -348,51 +380,56 @@
         font-size: 13px;
         font-weight: 500;
         display: inline-block;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
     }
 
     .badge-status {
-        padding: 6px 10px;
+        padding: 5px 10px;
         border-radius: 6px;
-        font-size: 12px;
+        font-size: 13px;
+        font-weight: 500;
         display: inline-flex;
         align-items: center;
         gap: 6px;
     }
 
     .badge-status.pending {
-        background-color: rgba(245, 158, 11, 0.1);
-        color: #f59e0b;
+        background-color: #854d0e;
+        color: #fef9c3;
     }
 
     .badge-status.approved {
-        background-color: rgba(16, 185, 129, 0.1);
-        color: #10b981;
+        background-color: #065f46;
+        color: #d1fae5;
     }
 
     .badge-status.rejected {
-        background-color: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
+        background-color: #991b1b;
+        color: #fee2e2;
     }
 
     /* Empty state */
     .empty-data {
-        text-align: center;
+        padding: 0 !important;
     }
 
     .empty-state {
         padding: 40px 20px;
         text-align: center;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        border-radius: 10px;
     }
 
     .empty-state i {
-        font-size: 48px;
-        color: #64748b;
+        font-size: 40px;
+        color: #60a5fa;
         margin-bottom: 16px;
     }
 
     .empty-state p {
-        color: #94a3b8;
-        margin: 0;
+        color: #cbd5e1;
+        margin-bottom: 0;
+        font-size: 16px;
     }
 
     /* Responsive */
@@ -450,6 +487,7 @@
             width: 100%;
             justify-content: center;
             margin-bottom: 20px;
+            color: black;
         }
         
         .pengembalian-card {

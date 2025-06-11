@@ -65,13 +65,15 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('/peminjaman/{peminjaman}/reject', [PeminjamanController::class, 'reject'])->name('peminjaman.reject');
 
     // Pengembalian
-    Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
-    Route::get('/pengembalian/create', [PengembalianController::class, 'create'])->name('pengembalian.create');
-    Route::post('/pengembalian', [PengembalianController::class, 'store'])->name('pengembalian.store');
-    Route::get('/pengembalian/{id}', [PengembalianController::class, 'show'])->name('pengembalian.show');
-    Route::post('/pengembalian/{id}/approve', [PengembalianController::class, 'approve'])->name('pengembalian.approve');
-    Route::post('/pengembalian/{id}/reject', [PengembalianController::class, 'reject'])->name('pengembalian.reject');
-
+    Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('admin.pengembalian.index');
+    Route::get('/pengembalian/create', [PengembalianController::class, 'create'])->name('admin.pengembalian.create');
+    Route::post('/pengembalian', [PengembalianController::class, 'store'])->name('admin.pengembalian.store');
+    Route::get('/pengembalian/{id}', [PengembalianController::class, 'show'])->name('admin.pengembalian.show');
+    Route::post('/pengembalian/{id}/approve', [PengembalianController::class, 'approve'])->name('admin.pengembalian.approve');
+    Route::get('/pengembalian/{id}/reject', [PengembalianController::class, 'reject'])->name('admin.pengembalian.reject');
+    Route::post('/pengembalian/{id}/process-reject', [PengembalianController::class, 'processReject'])->name('admin.pengembalian.process-reject');
+    Route::put('/pengembalian/{id}/update-denda', [PengembalianController::class, 'updateDenda'])->name('admin.pengembalian.update-denda');
+  
 
     // Laporan
     Route::get('/laporan/barang', [LaporanController::class, 'barang'])->name('laporan.barang');
@@ -106,6 +108,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.update.password');
 });
+
+
+
+
+
+
+
+
 
 
 

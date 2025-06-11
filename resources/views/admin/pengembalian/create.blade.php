@@ -1,3 +1,12 @@
+<div class="form-group">
+    <label for="kondisi_barang">Kondisi Barang</label>
+    <select class="form-control" id="kondisi_barang" name="kondisi_barang" required>
+        <option value="baik">Baik</option>
+        <option value="rusak">Rusak</option>
+        <option value="hilang">Hilang</option>
+    </select>
+</div>
+
 <div class="form-group denda-manual-container" style="display: none;">
     <label for="biaya_denda_manual">Biaya Denda (Rp)</label>
     <input type="number" class="form-control" id="biaya_denda_manual" name="biaya_denda_manual" min="0" placeholder="Masukkan jumlah denda manual">
@@ -24,3 +33,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+

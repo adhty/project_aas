@@ -37,8 +37,8 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label for="jumlah_barang" class="form-label fw-semibold">Jumlah Barang</label>
-                                    <input type="number" name="jumlah_barang" id="jumlah_barang" 
-                                        class="form-control @error('jumlah_barang') is-invalid @enderror" 
+                                    <input type="number" name="jumlah_barang" id="jumlah_barang"
+                                        class="form-control @error('jumlah_barang') is-invalid @enderror"
                                         min="0" value="{{ old('jumlah_barang', 0) }}" required>
                                     @error('jumlah_barang')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -47,21 +47,27 @@
                             </div>
                         </div>
 
-                        <div class="form-group mb-4">
-                            <label for="id_kategori" class="form-label fw-semibold">Kategori</label>
-                            <select name="id_kategori" id="id_kategori" 
-                                class="form-select @error('id_kategori') is-invalid @enderror" required>
-                                <option value="">-- Pilih Kategori --</option>
-                                @foreach($kategoris as $kategori)
-                                    <option value="{{ $kategori->id }}" {{ old('id_kategori') == $kategori->id ? 'selected' : '' }}>
-                                        {{ $kategori->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('id_kategori')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="id_kategori" class="form-label fw-semibold">Kategori</label>
+                                    <select name="id_kategori" id="id_kategori"
+                                        class="form-select @error('id_kategori') is-invalid @enderror" required>
+                                        <option value="">-- Pilih Kategori --</option>
+                                        @foreach($kategoris as $kategori)
+                                            <option value="{{ $kategori->id }}" {{ old('id_kategori') == $kategori->id ? 'selected' : '' }}>
+                                                {{ $kategori->nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_kategori')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
+
+
 
                         <div class="form-group mb-4">
                             <label for="foto" class="form-label fw-semibold">Foto Barang</label>

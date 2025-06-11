@@ -15,7 +15,7 @@
                     <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i> Tambah User Baru</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="{{ route('admin.users.store') }}">
+                    <form method="POST" action="{{ route('admin.users.store') }}" id="create-user-form">
                         @csrf
 
                         <div class="mb-4">
@@ -82,12 +82,9 @@
                             </div>
                         </div>
 
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary me-md-2">
-                                <i class="fas fa-times me-1"></i> Batal
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Simpan
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="button" onclick="confirmSubmit()" class="btn btn-primary py-2">
+                                <i class="fas fa-save me-2"></i> Simpan User
                             </button>
                         </div>
                     </form>
@@ -182,4 +179,30 @@
         border-color: #d1d5db;
     }
 </style>
+@endsection
+
+@section('scripts')
+<script>
+    function confirmSubmit() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        
+        Swal.fire({
+            title: 'Konfirmasi Tambah User',
+            html: `Apakah data berikut sudah benar?<br>
+                  <b>Nama:</b> ${name}<br>
+                  <b>Email:</b> ${email}`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('create-user-form').submit();
+            }
+        });
+    }
+</script>
 @endsection

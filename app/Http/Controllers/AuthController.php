@@ -22,7 +22,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('/admin/dashboard');
+            return redirect()->intended('/admin/dashboard')->with('login_success', true);
         }
 
         return back()->withErrors(['email' => 'Email atau Password salah']);
@@ -70,4 +70,7 @@ class AuthController extends Controller
         return redirect()->route('auth.login'); // <--- ini perbaikan
     }
 }
+
+
+
 
